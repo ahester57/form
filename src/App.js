@@ -133,8 +133,8 @@ class App extends Component {
           }
         // Here we register them
         }).then((result) => {
+	  const gasLimit = 2000000;
           if (!result) {
-
             // Register the user
             registerInstance.registerDevice(
               this.state.deviceId, 
@@ -145,25 +145,33 @@ class App extends Component {
               [],
               this.state.deviceMAC,
               {from: accounts[0],
-	      gas: 2000000}
+	      gas: gasLimit}
             )
             .then((result) => {
-             // wait for txt:wait
-              this.state.web3.eth.getTransactionReceipt(result['tx'],
-                (result) => {
-                  // After waiting callback
-                  if (result !== 'undefined') {
-                    this.setState({completed: 1});
-                    console.error(result);
-                  } else {
-                    this.setState({pending: 0});
-                    console.error("TX failed")
-                    console.error("result");
-                    alert ("Transaction Failed");
-                    this.forceUpdate();
-                  }
+              // wait for txt:wait
+	      console.log(result);
+	      // After waiting callback
+	      if (result !== 'undefined') {
+	        var receipt = result['receipt'];
+	    	if (receipt.gasUsed === gasLimit) {
+	      	  // TX revert
+	      	  this.setState({pending: 0});
+	      	  console.error(result);
+	      	  alert ("Transaction Reverted.\nInput not quite right");
+	      	  this.forceUpdate();
+	        } else {
+		  // TX worked
+		  this.setState({completed: 1});
+		  console.error(result);
+		  this.forceUpdate();
+	        }
+	      } else {
+	        this.setState({pending: 0});
+	        console.error("TX failed")
+	        alert ("Transaction Failed");
+	    	this.forceUpdate();
+	      }
 
-                });
             })
             .catch((error) => {
               // Error, take them to Register page
