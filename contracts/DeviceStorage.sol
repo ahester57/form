@@ -10,7 +10,7 @@ contract DeviceStorage {
     */
 
     // Represents an IoT device
-	struct Device {
+    struct Device {
         // device address/ id
         string _address;
         // class
@@ -36,10 +36,10 @@ contract DeviceStorage {
         uint256 num_pastBehaviors;
         // Hardware Info
         string MAC;
-	    bool isRegistered;
-	}
+	bool isRegistered;
+    }
 
-	mapping(string => Device) private mDevices;
+    mapping(string => Device) private mDevices;
 
     uint256 private num_devices; 
 
@@ -86,9 +86,9 @@ contract DeviceStorage {
         require(_class < 3);
         require(_priority > 100);
         require(_priority <= 140);
-        require(_categories.length >= 0);
+        require(_categories.length > 0);
         require(_categories.length < 256);
-        require(_req_types.length >= 0);
+//        require(_req_types.length > 0);
         require(_req_types.length < 256);
         require(_pastBehaviors.length >= 0);
         require(!strcmp(_MAC, ""));

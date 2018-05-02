@@ -27,7 +27,7 @@ contract DeviceReg is DeviceStorage() {
         string _MAC
     ) public {
         require(msg.sender != 0x0);
-        //require(!isRegistered(_address));
+        require(!isRegistered(_address));
         Device memory newDevice = makeDeviceObject(
             _address,
             _class,
@@ -38,7 +38,7 @@ contract DeviceReg is DeviceStorage() {
             _MAC 
         );
         storeDevice(newDevice);
-        //assert(isRegistered(_address));
+        assert(isRegistered(_address));
     }
 
     function getDeviceInfo(
@@ -52,7 +52,13 @@ contract DeviceReg is DeviceStorage() {
     ) {
         require(!strcmp(_of, ""));
         Device memory d = getDeviceObject(_of);
-        return (d._address, d.class, d.priority, d.categories[0], d.MAC);
+	uint8 cat;
+	if (d.categories.length == 0) {
+		cat = 0;
+	} else {
+		cat = d.categories[0];
+	}
+        return (d._address, d.class, d.priority, cat, d.MAC);
     }
 
     // Is this device registered

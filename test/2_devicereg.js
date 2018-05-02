@@ -9,23 +9,24 @@ contract('DeviceReg', function(accounts) {
 
     // DeviceReg a new user
     it("should register a new device", function() {
-        var t = [];
+        var t = [1];
         return instance.registerDevice(
             "0x28",
             2,
             101,
             t,
             t,
-            t,
+            [],
             "MA:CA:DD:RE:SS",
             {from: accounts[0]}
         )
         .then((result) => {
-            return instance.getDeviceMAC.call("0x28")
-            .then((mac) => {
-                assert.equal(mac, "MA:CA:DD:RE:SS",
+            return instance.getDeviceInfo.call("0x28")
+            .then((info) => {
+	    	console.log(info);
+                assert.equal(info[4], "MA:CA:DD:RE:SS",
                                 "new device registration failed");
-            });
+            })
         });
     });
     // This should NOT work. Sometimes your local client will not
@@ -34,6 +35,7 @@ contract('DeviceReg', function(accounts) {
     it("should not allow that device to re-register", function() {
         return instance.isRegistered.call("0x28")
         .then((result) => {
+	console.log(result)
                 assert.equal(result, true,
                                 "new device registered again, wrongly");
         });

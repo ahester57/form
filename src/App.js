@@ -144,7 +144,8 @@ class App extends Component {
               [],
               [],
               this.state.deviceMAC,
-              {from: accounts[0]}
+              {from: accounts[0],
+	      gas: 2000000}
             )
             .then((result) => {
              // wait for txt:wait
