@@ -1,6 +1,8 @@
 pragma solidity ^0.4.23;
 pragma experimental ABIEncoderV2;
 
+import {ResourceTypes} from "./ResourceTypes.sol";
+
 
 /// @title Device Info Storage
 contract DeviceStorage {
@@ -8,35 +10,25 @@ contract DeviceStorage {
     * @author Austin Hester
     * @dev Built to be used by other contracts
     */
-
+    
     // Represents an IoT device
     struct Device {
         // device address/ id
-        string _address;
-        // class
-/*      classes of IoT Devices
-        Class   RAM     FlashStor   Desc
-        0       <1kB    <100kB      need gateway for calls
-        1       ~10kB   ~100kB      use protocol stack, ie CoAP
-        2       ~50kB   ~250kB      support ipv4/6, network devices
- */        
-        uint8 class;
-/*      // priority
-        (100, 140], 101 being highest priority
-*/        
+        address device_id;
+        uint16 network_port;
+        bool legacy_device;
+        // priority [1-4]
         uint8 priority;
-        // Category
-        uint8[] categories;
-        uint8 num_categories;
+        uint256 balance;
+        uint256 trust_level;
         // Requests
-        uint8[] requestTypes;
-        uint8 num_reqTypes;
-        // Past requests
-        string[] pastBehaviors; //stores past requests
-        uint256 num_pastBehaviors;
-        // Hardware Info
+        string request_type;
+        ResourceTypes.ResourceRanges resource_ranges;
         string MAC;
-	bool isRegistered;
+        bool isRegistered;
+        bool isBlocked;
+        // Past requests
+        address prev_request_id;
     }
 
     mapping(string => Device) private mDevices;

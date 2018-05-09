@@ -133,7 +133,7 @@ class App extends Component {
           }
         // Here we register them
         }).then((result) => {
-	  const gasLimit = 2000000;
+	        const gasLimit = 2000000;
           if (!result) {
             // Register the user
             registerInstance.registerDevice(
@@ -145,32 +145,30 @@ class App extends Component {
               [],
               this.state.deviceMAC,
               {from: accounts[0],
-	      gas: gasLimit}
+	            gas: gasLimit}
             )
             .then((result) => {
               // wait for txt:wait
-	      console.log(result);
-	      // After waiting callback
-	      if (result !== 'undefined') {
-	        var receipt = result['receipt'];
-	    	if (receipt.gasUsed === gasLimit) {
-	      	  // TX revert
-	      	  this.setState({pending: 0});
-	      	  console.error(result);
-	      	  alert ("Transaction Reverted.\nInput not quite right");
-	      	  this.forceUpdate();
-	        } else {
-		  // TX worked
-		  this.setState({completed: 1});
-		  console.error(result);
-		  this.forceUpdate();
-	        }
-	      } else {
-	        this.setState({pending: 0});
-	        console.error("TX failed")
-	        alert ("Transaction Failed");
-	    	this.forceUpdate();
-	      }
+      	      console.log(result);
+      	      // After waiting callback
+      	      if (result !== 'undefined') {
+      	        var receipt = result['receipt'];
+  	           	if (receipt.gasUsed === gasLimit) {
+      	      	  // TX revert
+      	      	  this.setState({pending: 0});
+      	      	  console.error(result);
+      	      	  alert ("Transaction Reverted.\nInput not quite right");
+      	      	  this.forceUpdate();
+  	            } else {
+            		  // TX worked
+            		  this.setState({completed: 1});
+            		  console.error(result);
+            		  this.forceUpdate();
+  	            }
+      	      } else {this.setState({pending: 0}); console.error("TX failed")
+      	        alert ("Transaction Failed");
+      	    	  this.forceUpdate();
+      	      }
 
             })
             .catch((error) => {
