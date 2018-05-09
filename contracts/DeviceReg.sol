@@ -2,10 +2,11 @@ pragma solidity ^0.4.23;
 pragma experimental ABIEncoderV2;
 
 import {DeviceStorage} from "./DeviceStorage.sol";
+import {Ownable} from "./Ownable.sol";
 
 
 /// @title Node Registration
-contract DeviceReg is DeviceStorage() {
+contract DeviceReg is Ownable, DeviceStorage() {
     /*
     * @author Austin Hester
     * @dev For use in the Registration Dapp
@@ -70,6 +71,17 @@ contract DeviceReg is DeviceStorage() {
         require(!strcmp(_of, ""));
         Device memory d = getDeviceObject(_of);
         return d.isRegistered;
+    }
+
+    // Is this device registered
+    /// @param _of bytes32
+    /// @return boolean
+    function isBlocked(
+        string _of
+    ) public view returns (bool) {
+        require(!strcmp(_of, ""));
+        Device memory d = getDeviceObject(_of);
+        return d.isBlocked;
     }
 
 }

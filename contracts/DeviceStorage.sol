@@ -2,15 +2,16 @@ pragma solidity ^0.4.23;
 pragma experimental ABIEncoderV2;
 
 import {ResourceTypes} from "./ResourceTypes.sol";
+import {Ownable} from "./Ownable.sol";
 
 
 /// @title Device Info Storage
-contract DeviceStorage {
+contract DeviceStorage is Ownable {
     /*
     * @author Austin Hester
     * @dev Built to be used by other contracts
     */
-    
+
     // Represents an IoT device
     struct Device {
         // device address/ id
@@ -135,6 +136,22 @@ contract DeviceStorage {
         num_devices += 1;  
 
         assert(num_devices == oldN + 1);
+        assert(mDevices[_device._address].isRegistered);
+    }
+
+    // Store the Device object
+    /// @param _device object 
+    function updateDevice(
+        Device _device
+    ) internal onlyOwner {
+        require(msg.sender != 0x0);
+        //require(!mDevices[_device._address].isRegistered);
+
+        uint256 oldN = num_devices;
+        mDevices[_device._address] = _device;
+        //num_devices += 1;  
+
+        assert(num_devices == oldN);
         assert(mDevices[_device._address].isRegistered);
     }
 

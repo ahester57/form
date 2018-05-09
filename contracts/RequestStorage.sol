@@ -1,9 +1,11 @@
 pragma solidity ^0.4.23;
+pragma experimental ABIEncoderV2;
 
 import {ResourceTypes} from "./ResourceTypes.sol";
+import {Ownable} from "./Ownable.sol";
 
 
-contract RequestStorage {
+contract RequestStorage is Ownable {
 
 	struct Request {
 		address request_id;
@@ -14,6 +16,7 @@ contract RequestStorage {
 		bool isHandledByEdge;
 		address prev_request_id;
 		bool isAccepted;
+		bool exists;
 	}
 
 	// map device address to request.
@@ -22,8 +25,38 @@ contract RequestStorage {
 	// and filter. I'll look into this.
 	uint256 num_requests;
 
+	mapping(address => Request) mRequests;
+	mapping(address => address[]) mMapDeviceToRequests;
+	address[] mDeviceRequests;	
+
 	constructor() public {
 		num_requests = 0;
+	}
+
+	function getRequestObject(
+		address _request_id
+	) public view returns (Request) {
+		require(mRequests[_request_id].exists);
+		return mRequests[_request_id];
+	}
+
+	function makeRequestObject(
+
+	) public pure returns (Request) {
+
+	}
+
+	function updateRequestObject(
+		Request _new_request
+	) public {
+		// update	
+	}
+
+	function storeRequestObject(
+		Request _new_request
+	) public {
+
+		num_requests += 1;
 	}
 
 }
