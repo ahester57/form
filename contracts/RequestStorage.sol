@@ -43,7 +43,7 @@ contract RequestStorage is Ownable {
 	function makeRequestObject(
 
 	) public pure returns (Request) {
-
+		// uint256 timestamp = block.timestamp
 	}
 
 	function updateRequestObject(

@@ -90,7 +90,6 @@ class App extends Component {
     const contract = require('truffle-contract')
     const register = contract(DeviceRegContract)
     register.setProvider(this.state.web3.currentProvider)
-    this.forceUpdate();
 
     console.log("boutta connect");
     console.log(DeviceRegContract);
@@ -112,7 +111,7 @@ class App extends Component {
               console.error(user);
               const deviceInfo = user;
               // Update state with registered info
-              this.setState({deviceId: deviceInfo[0],
+              this.setState({ deviceId: deviceInfo[0],
                               deviceClass: deviceInfo[1],
                               devicePriority: deviceInfo[2],
                               deviceCategory: deviceInfo[3],
@@ -165,7 +164,9 @@ class App extends Component {
             		  console.error(result);
             		  this.forceUpdate();
   	            }
-      	      } else {this.setState({pending: 0}); console.error("TX failed")
+      	      } else {
+                this.setState({pending: 0});
+                console.error("TX failed")
       	        alert ("Transaction Failed");
       	    	  this.forceUpdate();
       	      }
