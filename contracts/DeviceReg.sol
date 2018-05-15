@@ -19,56 +19,39 @@ contract DeviceReg is Ownable, DeviceStorage() {
     // Register user with given info
     // Revert o alredy registered
     function registerDevice(
-        string _address,
-        uint8 _class,
+        address _device_id,
         uint8 _priority,
-        uint8[] _categories,
-        uint8[] _req_types,
-        string[] _pastBehaviors, 
         string _MAC
     ) public {
         require(msg.sender != 0x0);
-        require(!isRegistered(_address));
+        require(!isRegistered(_device_id));
         Device memory newDevice = makeDeviceObject(
-            _address,
-            _class,
+            _device_id,
             _priority,
-            _categories,
-            _req_types,
-            _pastBehaviors,
             _MAC 
         );
         storeDevice(newDevice);
-        assert(isRegistered(_address));
+        assert(isRegistered(_device_id));
     }
 
     function getDeviceInfo(
-        string _of
+        address device_id
     ) public view returns (
-        string _address,
-        uint8 _class,
-        uint8 _priority,
-        uint8 _category,
-        string _MAC
+        uint8 priority,
+        string MAC
     ) {
-        require(!strcmp(_of, ""));
-        Device memory d = getDeviceObject(_of);
-	uint8 cat;
-	if (d.categories.length == 0) {
-		cat = 0;
-	} else {
-		cat = d.categories[0];
-	}
-        return (d._address, d.class, d.priority, cat, d.MAC);
+        require(device_id != address(0));
+        Device memory d = getDeviceObject(device_id);
+        return (d.priority, d.MAC);
     }
 
     // Is this device registered
     /// @param _of bytes32
     /// @return boolean
     function isRegistered(
-        string _of
+        address _of
     ) public view returns (bool) {
-        require(!strcmp(_of, ""));
+        require(_of != address(0));
         Device memory d = getDeviceObject(_of);
         return d.isRegistered;
     }
@@ -77,9 +60,9 @@ contract DeviceReg is Ownable, DeviceStorage() {
     /// @param _of bytes32
     /// @return boolean
     function isBlocked(
-        string _of
+        address _of
     ) public view returns (bool) {
-        require(!strcmp(_of, ""));
+        require(_of != address(0));
         Device memory d = getDeviceObject(_of);
         return d.isBlocked;
     }

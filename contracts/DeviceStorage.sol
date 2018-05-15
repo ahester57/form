@@ -32,7 +32,7 @@ contract DeviceStorage is Ownable {
         address prev_request_id;
     }
 
-    mapping(string => Device) private mDevices;
+    mapping(address => Device) private mDevices;
 
     uint256 private num_devices; 
 
@@ -40,7 +40,7 @@ contract DeviceStorage is Ownable {
     // and multiple contsructors
     // using old-style contsructor here for now
     constructor() public {
-    	require(msg.sender != 0x0);
+    	require(msg.sender != address(0));
         num_devices = 0;
         assert(num_devices == 0);
     }
@@ -50,9 +50,9 @@ contract DeviceStorage is Ownable {
     // Cannot use struct as return values. -Apr 18
     /// @return {Device} object 
     function getDeviceObject(
-        string _of
+        address _of
     ) internal view returns (Device) {
-        require(!strcmp(_of, ""));
+        require(_of != address(0));
         Device memory d = mDevices[_of];
         return d;
     } 
@@ -66,36 +66,18 @@ contract DeviceStorage is Ownable {
     /// @param _pastBehaviors device past, usually empty
     /// @param _MAC MAC address of device
     function makeDeviceObject(
-        string _address,
-        uint8 _class,
+        address _device_id,
         uint8 _priority,
-        uint8[] _categories,
-        uint8[] _req_types,
-        string[] _pastBehaviors, 
         string _MAC
     ) internal pure returns (Device) {
-        require(!strcmp(_address, ""));
-        require(_class >= 0);
-        require(_class < 3);
-        require(_priority > 100);
-        require(_priority <= 140);
-        require(_categories.length > 0);
-        require(_categories.length < 256);
-//        require(_req_types.length > 0);
-        require(_req_types.length < 256);
-        require(_pastBehaviors.length >= 0);
+        require(_device_id != address(0));
+        require(_priority > 0);
+        require(_priority <= 4);
         require(!strcmp(_MAC, ""));
          // May have to do even more checks 
         Device memory newDevice = Device(
-            _address,
-            _class,
+            _device_id,
             _priority,
-            _categories,
-            uint8(_categories.length),
-            _req_types,
-            uint8(_req_types.length),
-            _pastBehaviors,
-            _pastBehaviors.length,
             _MAC,
             true
         );
@@ -106,21 +88,21 @@ contract DeviceStorage is Ownable {
     /// @param _address address 
     /// @param _behavior a graded request
     function addBehavior(
-        string _address, 
+        address _address, 
         string _behavior
     ) internal {
-        require(msg.sender != 0x0);
-        require(mDevices[_address].isRegistered);
-        require(strcmp(mDevices[_address]._address, _address));
+        //require(msg.sender != address(0));
+        //require(mDevices[_address].isRegistered);
+        //require(strcmp(mDevices[_address].device_id, _address));
 
         Device storage device = mDevices[_address];
-        uint256 oldN = device.num_pastBehaviors;
-        device.pastBehaviors[oldN] = _behavior;
-        device.num_pastBehaviors += 1;
-        mDevices[_address] = device;
+        //uint256 oldN = device.num_pastBehaviors;
+        //device.pastBehaviors[oldN] = _behavior;
+        //device.num_pastBehaviors += 1;
+        //mDevices[_address] = device;
 
-        assert(mDevices[_address].num_pastBehaviors == oldN + 1);
-        assert(strcmp(mDevices[_address].pastBehaviors[oldN], _behavior));
+        //assert(mDevices[_address].num_pastBehaviors == oldN + 1);
+        //assert(strcmp(mDevices[_address].pastBehaviors[oldN], _behavior));
     }
 
     // Store the Device object
@@ -128,15 +110,15 @@ contract DeviceStorage is Ownable {
     function storeDevice(
         Device _device
     ) internal {
-        require(msg.sender != 0x0);
-        require(!mDevices[_device._address].isRegistered);
+        require(msg.sender != address(0));
+        require(!mDevices[_device.device_id].isRegistered);
 
         uint256 oldN = num_devices;
-    	mDevices[_device._address] = _device;
+    	mDevices[_device.device_id] = _device;
         num_devices += 1;  
 
         assert(num_devices == oldN + 1);
-        assert(mDevices[_device._address].isRegistered);
+        assert(mDevices[_device.device_id].isRegistered);
     }
 
     // Store the Device object
@@ -144,15 +126,15 @@ contract DeviceStorage is Ownable {
     function updateDevice(
         Device _device
     ) internal onlyOwner {
-        require(msg.sender != 0x0);
-        //require(!mDevices[_device._address].isRegistered);
+        require(msg.sender != address(0));
+        //require(!mDevices[_device.device_id].isRegistered);
 
         uint256 oldN = num_devices;
-        mDevices[_device._address] = _device;
+        mDevices[_device.device_id] = _device;
         //num_devices += 1;  
 
         assert(num_devices == oldN);
-        assert(mDevices[_device._address].isRegistered);
+        assert(mDevices[_device.device_id].isRegistered);
     }
 
     /// @param a string 
