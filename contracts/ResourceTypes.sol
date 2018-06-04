@@ -1,4 +1,4 @@
-pragma soldity ^0.4.23;
+pragma solidity ^0.4.24;
 
 
 library ResourceTypes {

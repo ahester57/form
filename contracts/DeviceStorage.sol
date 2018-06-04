@@ -1,4 +1,4 @@
-pragma solidity ^0.4.23;
+pragma solidity ^0.4.24;
 pragma experimental ABIEncoderV2;
 
 import {ResourceTypes} from "./ResourceTypes.sol";
@@ -58,12 +58,7 @@ contract DeviceStorage is Ownable {
     } 
 
     //
-    /// @param _address device address or id
-    /// @param _class iot device class
     /// @param _priority iot device priority
-    /// @param _categories device categories, could be multiple
-    /// @param _req_types device request types, could be multiple
-    /// @param _pastBehaviors device past, usually empty
     /// @param _MAC MAC address of device
     function makeDeviceObject(
         address _device_id,
@@ -73,13 +68,32 @@ contract DeviceStorage is Ownable {
         require(_device_id != address(0));
         require(_priority > 0);
         require(_priority <= 4);
-        require(!strcmp(_MAC, ""));
+        require(!strcmp(bytes(_MAC), ""));
          // May have to do even more checks 
+        ResourceTypes.ResourceRanges memory rr = 
+            ResourceTypes.ResourceRanges(
+                1000,
+                1200,
+                800,
+                1000,
+                16000,
+                16000,
+                10,
+                100
+            );
         Device memory newDevice = Device(
             _device_id,
+            4444,
+            true,
             _priority,
+            1000,
+            0,
+            "html/text",
+            rr,
             _MAC,
-            true
+            true,
+            false,
+            address(0)
         );
         return newDevice;
     }
@@ -141,8 +155,8 @@ contract DeviceStorage is Ownable {
     /// @param b string 
     /// @return boolean 
     function strcmp(
-        string a,
-        string b
+        bytes a,
+        bytes b
     ) internal pure returns (bool) {
         return (keccak256(a) == keccak256(b));
     }
