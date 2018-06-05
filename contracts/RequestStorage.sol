@@ -1,5 +1,4 @@
 pragma solidity ^0.4.24;
-pragma experimental ABIEncoderV2;
 
 import {ResourceTypes} from "./ResourceTypes.sol";
 import {Ownable} from "./Ownable.sol";
@@ -33,30 +32,5 @@ contract RequestStorage is Ownable {
 		num_requests = 0;
 	}
 
-	function getRequestObject(
-		address _request_id
-	) public view returns (Request) {
-		require(mRequests[_request_id].exists);
-		return mRequests[_request_id];
-	}
-
-	function makeRequestObject(
-
-	) public pure returns (Request) {
-		// uint256 timestamp = block.timestamp
-	}
-
-	function updateRequestObject(
-		Request _new_request
-	) public {
-		// update	
-	}
-
-	function storeRequestObject(
-		Request _new_request
-	) public {
-
-		num_requests += 1;
-	}
 
 }

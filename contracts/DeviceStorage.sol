@@ -1,6 +1,7 @@
 pragma solidity ^0.4.24;
-pragma experimental ABIEncoderV2;
+pragma experimental ABIEncoderV2; 
 
+import {EternalStorage} from "./EternalStorage.sol";
 import {ResourceTypes} from "./ResourceTypes.sol";
 import {Ownable} from "./Ownable.sol";
 
@@ -32,6 +33,8 @@ contract DeviceStorage is Ownable {
         address prev_request_id;
     }
 
+    address _eternalStorage;
+
     mapping(address => Device) private mDevices;
 
     uint256 private num_devices; 
@@ -39,11 +42,24 @@ contract DeviceStorage is Ownable {
     // Solidity 0.4.23 has an issue with inheritence
     // and multiple contsructors
     // using old-style contsructor here for now
-    constructor() public {
+    constructor(address _es) public {
     	require(msg.sender != address(0));
         num_devices = 0;
+        _eternalStorage = _es;
+        //ec.setAddress(keccak256("dd"), this);
         assert(num_devices == 0);
     }
+
+    function setEternalStorage() public {
+       EternalStorage es = EternalStorage(_eternalStorage); 
+       es.setString(keccak256("dd"), "this");
+    }
+
+    function getEternalStorage() public view returns (address) {
+       EternalStorage es = EternalStorage(_eternalStorage); 
+       //return es.getAddress(keccak256("dd"));
+       return _eternalStorage;
+   }
 
     // Get the Device object, cannot get through web3 as of now
     // Can only be used in contracts.
@@ -149,6 +165,28 @@ contract DeviceStorage is Ownable {
 
         assert(num_devices == oldN);
         assert(mDevices[_device.device_id].isRegistered);
+    }
+
+    // Is this device registered
+    /// @param _of bytes32
+    /// @return boolean
+    function isRegistered(
+        address _of
+    ) public view returns (bool) {
+        require(_of != address(0));
+        Device memory d = getDeviceObject(_of);
+        return d.isRegistered;
+    }
+
+    // Is this device registered
+    /// @param _of bytes32
+    /// @return boolean
+    function isBlocked(
+        address _of
+    ) public view returns (bool) {
+        require(_of != address(0));
+        Device memory d = getDeviceObject(_of);
+        return d.isBlocked;
     }
 
     /// @param a string 
